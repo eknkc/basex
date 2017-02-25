@@ -121,20 +121,20 @@ var testCases = []struct {
 }
 
 func Test_AmbiguousAlphabet(t *testing.T) {
-	_, err := NewEncoder("01gh1")
+	_, err := NewEncoding("01gh1")
 	expect(err.Error(), "Ambiguous alphabet.", t)
 }
 
 func Test_Encode(t *testing.T) {
 	for _, cs := range testCases {
-		enc, _ := NewEncoder(cs.alphabet)
+		enc, _ := NewEncoding(cs.alphabet)
 		expect(enc.Encode(hex(cs.dec)), cs.enc, t)
 	}
 }
 
 func Test_Decode(t *testing.T) {
 	for _, cs := range testCases {
-		enc, _ := NewEncoder(cs.alphabet)
+		enc, _ := NewEncoding(cs.alphabet)
 		dec, err := enc.Decode(cs.enc)
 		if err != nil {
 			t.Fatal(err)
@@ -144,7 +144,7 @@ func Test_Decode(t *testing.T) {
 }
 
 func Test_NonDecodable(t *testing.T) {
-	enc, _ := NewEncoder("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+	enc, _ := NewEncoding("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 	_, err := enc.Decode("invalid")
 	expect(err.Error(), "Non Base Character", t)
 	_, err = enc.Decode("c2F0b3NoaQo=")
