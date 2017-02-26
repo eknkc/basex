@@ -3,6 +3,7 @@
 package basex
 
 import (
+	"bytes"
 	"errors"
 )
 
@@ -64,17 +65,17 @@ func (e *Encoding) Encode(source []byte) string {
 		}
 	}
 
-	result := ""
+	var res bytes.Buffer
 
 	for k := 0; source[k] == 0 && k < len(source)-1; k++ {
-		result += string(e.alphabet[0])
+		res.WriteRune(e.alphabet[0])
 	}
 
 	for q := len(digits) - 1; q >= 0; q-- {
-		result += string(e.alphabet[digits[q]])
+		res.WriteRune(e.alphabet[digits[q]])
 	}
 
-	return result
+	return res.String()
 }
 
 // Decode function decodes a string previously obtained from Encode, using the same alphabet and returns a byte slice
