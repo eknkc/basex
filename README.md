@@ -1,6 +1,8 @@
 # basex
---
-    import "github.com/eknkc/basex"
+
+[![Actions Status](https://github.com/eknkc/basex/workflows/Go/badge.svg)](https://github.com/eknkc/basex/actions)
+
+import "github.com/eknkc/basex"
 
 Package basex provides fast base encoding / decoding of any given alphabet using
 bitcoin style leading zero compression. It is a GO port of
