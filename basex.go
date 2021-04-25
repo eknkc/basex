@@ -88,7 +88,7 @@ func (e *Encoding) Decode(source string) ([]byte, error) {
 	runes := []rune(source)
 
 	bytes := []byte{0}
-	for i := 0; i < len(source); i++ {
+	for i := 0; i < len(runes); i++ {
 		value, ok := e.alphabetMap[runes[i]]
 
 		if !ok {
