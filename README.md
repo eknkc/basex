@@ -17,7 +17,7 @@ type Encoding struct {
 }
 ```
 
-Encoding is a custom base encoding defined by an alphabet. It should bre created
+Encoding is a custom base encoding defined by an alphabet. It should be created
 using NewEncoding function
 
 #### func  NewEncoding
@@ -40,7 +40,7 @@ alphabets:
 func (e *Encoding) Decode(source string) ([]byte, error)
 ```
 Decode function decodes a string previously obtained from Encode, using the same
-alphabet and returns a byte slice In case the input is not valid an arror will
+alphabet and returns a byte slice In case the input is not valid an error will
 be returned
 
 #### func (*Encoding) Encode
