@@ -7,8 +7,16 @@ import (
 	"errors"
 )
 
+var (
+	// ErrAmbiguousAlphabet is returned when the alphabet contains duplicate characters.
+	ErrAmbiguousAlphabet = errors.New("Ambiguous alphabet.")
+	// ErrNonBaseCharacter is returned when Decode encounters a character that
+	// is not part of the encoding alphabet.
+	ErrNonBaseCharacter = errors.New("Non Base Character")
+)
+
 // Encoding is a custom base encoding defined by an alphabet.
-// It should bre created using NewEncoding function
+// It should be created using NewEncoding function.
 type Encoding struct {
 	base        int
 	alphabet    []rune
@@ -29,7 +37,7 @@ func NewEncoding(alphabet string) (*Encoding, error) {
 
 	for i := 0; i < len(runes); i++ {
 		if _, ok := runeMap[runes[i]]; ok {
-			return nil, errors.New("Ambiguous alphabet.")
+			return nil, ErrAmbiguousAlphabet
 		}
 
 		runeMap[runes[i]] = i
@@ -66,6 +74,7 @@ func (e *Encoding) Encode(source []byte) string {
 	}
 
 	var res bytes.Buffer
+	res.Grow(len(digits))
 
 	for k := 0; source[k] == 0 && k < len(source)-1; k++ {
 		res.WriteRune(e.alphabet[0])
@@ -79,7 +88,7 @@ func (e *Encoding) Encode(source []byte) string {
 }
 
 // Decode function decodes a string previously obtained from Encode, using the same alphabet and returns a byte slice
-// In case the input is not valid an arror will be returned
+// In case the input is not valid an error will be returned.
 func (e *Encoding) Decode(source string) ([]byte, error) {
 	if len(source) == 0 {
 		return []byte{}, nil
@@ -87,36 +96,36 @@ func (e *Encoding) Decode(source string) ([]byte, error) {
 
 	runes := []rune(source)
 
-	bytes := []byte{0}
+	out := []byte{0}
 	for i := 0; i < len(runes); i++ {
 		value, ok := e.alphabetMap[runes[i]]
 
 		if !ok {
-			return nil, errors.New("Non Base Character")
+			return nil, ErrNonBaseCharacter
 		}
 
 		carry := int(value)
 
-		for j := 0; j < len(bytes); j++ {
-			carry += int(bytes[j]) * e.base
-			bytes[j] = byte(carry & 0xff)
+		for j := 0; j < len(out); j++ {
+			carry += int(out[j]) * e.base
+			out[j] = byte(carry & 0xff)
 			carry >>= 8
 		}
 
 		for carry > 0 {
-			bytes = append(bytes, byte(carry&0xff))
+			out = append(out, byte(carry&0xff))
 			carry >>= 8
 		}
 	}
 
 	for k := 0; runes[k] == e.alphabet[0] && k < len(runes)-1; k++ {
-		bytes = append(bytes, 0)
+		out = append(out, 0)
 	}
 
 	// Reverse bytes
-	for i, j := 0, len(bytes)-1; i < j; i, j = i+1, j-1 {
-		bytes[i], bytes[j] = bytes[j], bytes[i]
+	for i, j := 0, len(out)-1; i < j; i, j = i+1, j-1 {
+		out[i], out[j] = out[j], out[i]
 	}
 
-	return bytes, nil
+	return out, nil
 }
