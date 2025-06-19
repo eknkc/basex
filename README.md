@@ -50,3 +50,14 @@ func (e *Encoding) Encode(source []byte) string
 ```
 Encode function receives a byte slice and encodes it to a string using the
 alphabet provided
+
+#### Variables
+
+```go
+var (
+    ErrAmbiguousAlphabet error
+    ErrNonBaseCharacter  error
+)
+```
+These errors are returned by `NewEncoding` and `Decode` respectively and can be
+checked with `errors.Is`.

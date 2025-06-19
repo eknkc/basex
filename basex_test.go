@@ -2,6 +2,7 @@ package basex
 
 import (
 	h "encoding/hex"
+	"errors"
 	"testing"
 )
 
@@ -122,7 +123,9 @@ var testCases = []struct {
 
 func Test_AmbiguousAlphabet(t *testing.T) {
 	_, err := NewEncoding("01gh1")
-	expect(err.Error(), "Ambiguous alphabet.", t)
+	if !errors.Is(err, ErrAmbiguousAlphabet) {
+		t.Fatalf("expected ErrAmbiguousAlphabet, got %v", err)
+	}
 }
 
 func Test_Encode(t *testing.T) {
@@ -146,15 +149,25 @@ func Test_Decode(t *testing.T) {
 func Test_NonDecodable(t *testing.T) {
 	enc, _ := NewEncoding("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 	_, err := enc.Decode("invalid")
-	expect(err.Error(), "Non Base Character", t)
+	if !errors.Is(err, ErrNonBaseCharacter) {
+		t.Fatalf("expected ErrNonBaseCharacter, got %v", err)
+	}
 	_, err = enc.Decode("c2F0b3NoaQo=")
-	expect(err.Error(), "Non Base Character", t)
+	if !errors.Is(err, ErrNonBaseCharacter) {
+		t.Fatalf("expected ErrNonBaseCharacter, got %v", err)
+	}
 	_, err = enc.Decode(" 1111111111")
-	expect(err.Error(), "Non Base Character", t)
+	if !errors.Is(err, ErrNonBaseCharacter) {
+		t.Fatalf("expected ErrNonBaseCharacter, got %v", err)
+	}
 	_, err = enc.Decode("1111111111 ")
-	expect(err.Error(), "Non Base Character", t)
+	if !errors.Is(err, ErrNonBaseCharacter) {
+		t.Fatalf("expected ErrNonBaseCharacter, got %v", err)
+	}
 	_, err = enc.Decode(" \t\n\u000b\f\r skip \r\f\u000b\n\t a")
-	expect(err.Error(), "Non Base Character", t)
+	if !errors.Is(err, ErrNonBaseCharacter) {
+		t.Fatalf("expected ErrNonBaseCharacter, got %v", err)
+	}
 }
 
 func hex(in string) []byte {
