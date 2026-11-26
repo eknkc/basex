@@ -25,6 +25,9 @@ type Encoding struct {
 //   - base62: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 func NewEncoding(alphabet string) (*Encoding, error) {
 	runes := []rune(alphabet)
+	if len(runes) < 2 {
+		return nil, errors.New("Alphabet must contain at least two characters.")
+	}
 	runeMap := make(map[rune]int)
 
 	for i := 0; i < len(runes); i++ {
